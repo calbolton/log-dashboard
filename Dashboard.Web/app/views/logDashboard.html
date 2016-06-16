@@ -1,4 +1,374 @@
-﻿<script src="../../Scripts/jquery-1.10.2.js"></script>
-<script src="../../Scripts/jquery.signalR-2.2.0.js"></script>
-<script src="../../signalr/hubs"></script>
-<script src="../controllers/logDashboardController.js"></script>
+﻿    <div>
+        <table>
+            <thead>
+                <tr>Message</tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+<h3>Adjuvant Error</h3>
+<div class="table-responsive">
+
+    <table class="table table-advance table-hover" id="adjuvantErrorLogs">
+        <thead>
+        <tr>
+            <th>
+                DateTimeOffset
+            </th>
+            <th>
+                MicroService
+            </th>
+            <th>
+                Module
+            </th>
+            <th>
+                ThreadId
+            </th>
+            <th>
+                Action
+            </th>
+            <th>
+                UserId
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Message
+            </th>
+            <th>
+                Exception
+            </th>
+
+        </tr>
+        </thead>
+        <tbody style="font-size: 13px;">
+        <tr ng-repeat="adjuvantLog in adjuvantErrorLogs">
+            <td>
+                {{adjuvantLog.DateTimeOffset}}
+            </td>
+            <td>
+                {{adjuvantLog.MicroService}}
+            </td>
+            <td>
+                {{adjuvantLog.Module}}
+            </td>
+            <td>
+                {{adjuvantLog.ThreadId}}
+            </td>
+            <td>
+                {{adjuvantLog.Action}}
+            </td>
+            <td>
+                {{adjuvantLog.UserId}}
+            </td>
+            <td>
+                {{adjuvantLog.Type}}
+            </td>
+            <td>
+                {{adjuvantLog.Message}}
+            </td>
+            <td>
+                {{adjuvantLog.Exception}}
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+
+
+</div>
+
+<hr/>
+<h3>Adjuvant Global</h3>
+
+<div class="table-responsive">
+    <table class="table table-advance table-hover" id="adjuvantGlobalLogs">
+        <thead>
+            <tr>
+                <th>
+                    DateTimeOffset
+                </th>
+                <th>
+                    MicroService
+                </th>
+                <th>
+                    Module
+                </th>
+                <th>
+                    ThreadId
+                </th>
+                <th>
+                    Action
+                </th>
+                <th>
+                    UserId
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Message
+                </th>
+                <th>
+                    Exception
+                </th>
+
+            </tr>
+        </thead>
+        <tbody style="font-size: 13px;">
+            <tr ng-repeat="adjuvantLog in adjuvantGlobalLogs">
+                <td>
+                    {{adjuvantLog.DateTimeOffset}}
+                </td>
+                <td>
+                    {{adjuvantLog.MicroService}}
+                </td>
+                <td>
+                    {{adjuvantLog.Module}}
+                </td>
+                <td>
+                    {{adjuvantLog.ThreadId}}
+                </td>
+                <td>
+                    {{adjuvantLog.Action}}
+                </td>
+                <td>
+                    {{adjuvantLog.UserId}}
+                </td>
+                <td>
+                    {{adjuvantLog.Type}}
+                </td>
+                <td>
+                    {{adjuvantLog.Message}}
+                </td>
+                <td>
+                    {{adjuvantLog.Exception}}
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+</div>
+<hr />
+
+<h3>Adjuvant Information</h3>
+
+
+<div class="table-responsive">
+    <table class="table table-advance table-hover" id="adjuvantInformationalLogs">
+        <thead>
+            <tr>
+                <th>
+                    DateTimeOffset
+                </th>
+                <th>
+                    MicroService
+                </th>
+                <th>
+                    Module
+                </th>
+                <th>
+                    ThreadId
+                </th>
+                <th>
+                    Action
+                </th>
+                <th>
+                    UserId
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Message
+                </th>
+                <th>
+                    Exception
+                </th>
+
+            </tr>
+        </thead>
+        <tbody style="font-size: 13px;">
+            <tr ng-repeat="adjuvantLog in adjuvantInformationalLogs">
+                <td>
+                    {{adjuvantLog.DateTimeOffset}}
+                </td>
+                <td>
+                    {{adjuvantLog.MicroService}}
+                </td>
+                <td>
+                    {{adjuvantLog.Module}}
+                </td>
+                <td>
+                    {{adjuvantLog.ThreadId}}
+                </td>
+                <td>
+                    {{adjuvantLog.Action}}
+                </td>
+                <td>
+                    {{adjuvantLog.UserId}}
+                </td>
+                <td>
+                    {{adjuvantLog.Type}}
+                </td>
+                <td>
+                    {{adjuvantLog.Message}}
+                </td>
+                <td>
+                    {{adjuvantLog.Exception}}
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+</div>
+<hr />
+
+<h3>Adjuvant Other</h3>
+
+<div class="table-responsive">
+    <table class="table table-advance table-hover" id="adjuvantOtherLogs">
+        <thead>
+            <tr>
+                <th>
+                    DateTimeOffset
+                </th>
+                <th>
+                    MicroService
+                </th>
+                <th>
+                    Module
+                </th>
+                <th>
+                    ThreadId
+                </th>
+                <th>
+                    Action
+                </th>
+                <th>
+                    UserId
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Message
+                </th>
+                <th>
+                    Exception
+                </th>
+
+            </tr>
+        </thead>
+        <tbody style="font-size: 13px;">
+            <tr ng-repeat="adjuvantLog in adjuvantOtherLogs">
+                <td>
+                    {{adjuvantLog.DateTimeOffset}}
+                </td>
+                <td>
+                    {{adjuvantLog.MicroService}}
+                </td>
+                <td>
+                    {{adjuvantLog.Module}}
+                </td>
+                <td>
+                    {{adjuvantLog.ThreadId}}
+                </td>
+                <td>
+                    {{adjuvantLog.Action}}
+                </td>
+                <td>
+                    {{adjuvantLog.UserId}}
+                </td>
+                <td>
+                    {{adjuvantLog.Type}}
+                </td>
+                <td>
+                    {{adjuvantLog.Message}}
+                </td>
+                <td>
+                    {{adjuvantLog.Exception}}
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+</div>
+<hr />
+
+<h3>Azure Logs</h3>
+
+<div class="table-responsive">
+    <table class="table table-advance table-hover" id="angularErrors">
+        <thead>
+            <tr>
+                <th>
+                    Created Date
+                </th>
+                <th>
+                    Level
+                </th>
+                <th>
+                    Application Name
+                </th>
+                <th>
+                    Instance Id
+                </th>
+                <th>
+                    Event Tick Count
+                </th>
+                <th>
+                    Event Id
+                </th>
+                <th>
+                    Process Id
+                </th>
+                <th>
+                    Thread Id
+                </th>
+                <th>
+                    Message
+                </th>
+                <th>
+                    Activity Id
+                </th>
+            </tr>
+        </thead>
+        <tbody style="font-size: 13px;">
+            <tr ng-repeat="log in azureLogs">
+                <td>
+                    {{log.Date}}
+                </td>
+                <td>
+                    {{log.Level}}
+                </td>
+                <td>
+                    {{log.ApplicationName}}
+                </td>
+                <td>
+                    {{log.InstanceId}}
+                </td>
+                <td>
+                    {{log.EventTickCount}}
+                </td>
+                <td>
+                    {{log.EventId}}
+                </td>
+                <td>
+                    {{log.PId}}
+                </td>
+                <td>
+                    {{log.TId}}
+                </td>
+                <td>
+                    {{log.Message}}
+                </td>
+                <td>
+                    {{log.ActivityId}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
