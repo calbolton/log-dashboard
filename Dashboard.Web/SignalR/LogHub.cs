@@ -21,7 +21,7 @@ namespace Dashboard.Web.SignalR
             var logRepository = new BlobStorageRepository(new BlobStorageContext()
             {
                 ConnectionString = connectionString,
-                Container = "dashboardlogs"
+                Container = "developmentwebapp"
             });
 
             _logFetcher = LogFetcher.Instance;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using Dashboard.Web._business.Domain;
 using Dashboard.Web._business.Domain.Infrastructure;
@@ -20,7 +21,7 @@ namespace Dashboard.Web.SignalR
         private ILogRepository _logRepository;
         private Timer _timer;
         private readonly TimeSpan _updateInterval;
-        private DateTime _lastUpdatedDateTime = DateTime.Now.AddHours(-1);
+        private DateTime _lastUpdatedDateTime = DateTime.Now.AddDays(-5);
 
         private LogFetcher(IHubConnectionContext<dynamic> clients)
         {
@@ -50,14 +51,16 @@ namespace Dashboard.Web.SignalR
             var logs = _logRepository.GetLogsAfter(_lastUpdatedDateTime);
             _lastUpdatedDateTime = DateTime.Now;
 
-            foreach (var azureLog in logs)
+            var orderedLogs = logs.OrderByDescending(x => x.Date);
+
+            foreach (var azureLog in orderedLogs)
             {
                 Logs.Add(azureLog);
             }
 
             Clients.All.logsAdded(logs);
 
-            WriteDummyLog();
+            //WriteDummyLog();
         }
 
         private static void WriteDummyLog()

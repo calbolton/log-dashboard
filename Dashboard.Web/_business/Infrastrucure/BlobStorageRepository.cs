@@ -68,14 +68,25 @@ namespace Dashboard.Web._business.Infrastrucure
             var retLogs = new List<AzureLog>();
             using (var memoryStream = new MemoryStream())
             {
-                // Download stream
-                blockBlob2.DownloadToStream(memoryStream);
-                
-                // Convert using string
-                var csvString = Encoding.ASCII.GetString(memoryStream.ToArray());
-                var stringRecords = _engine.ReadString(csvString);
+                try
+                {
+                    // Download stream
+                    blockBlob2.DownloadToStream(memoryStream);
 
-                retLogs.AddRange(stringRecords);
+                    // Convert using string
+                    var csvString = Encoding.ASCII.GetString(memoryStream.ToArray());
+                    var stringRecords = _engine.ReadString(csvString);
+
+                    retLogs.AddRange(stringRecords);
+                }
+                catch (Exception ex)
+                {
+                    retLogs.Add(new AzureLog()
+                    {
+                        ApplicationName = "ADJUVANT",
+                        Message = ex.Message
+                    });
+                }
             }
 
             return retLogs;
@@ -110,7 +121,7 @@ namespace Dashboard.Web._business.Infrastrucure
 
             if (openingBracket >= 0)
             {
-                var closingBracket = e.RecordLine.IndexOf("}", StringComparison.Ordinal);
+                var closingBracket = e.RecordLine.LastIndexOf("}", StringComparison.Ordinal);
 
                 if (closingBracket < 0)
                 {
@@ -138,10 +149,10 @@ namespace Dashboard.Web._business.Infrastrucure
         {
 
 
-            e.Record.Message = e.Record.Message.Replace("|", ",");
-            e.Record.Message = e.Record.Message.Replace("\"{\"", "{");
-            e.Record.Message = e.Record.Message.Replace("\"}\"", "}");
-            e.Record.Message = e.Record.Message.Replace("\"\"", "\"");
+            e.Record.Message = e.Record.Message?.Replace("|", ",");
+            e.Record.Message = e.Record.Message?.Replace("\"{\"", "{");
+            e.Record.Message = e.Record.Message?.Replace("\"}\"", "}");
+            e.Record.Message = e.Record.Message?.Replace("\"\"", "\"");
             //var l = JsonConvert.DeserializeObject<Log>(e.Record.Message);
             //e.Record.Message = e.Record.Message.Replace("\":\"", ":");
             //e.Record.Message = e.Record.Message.Replace("\",\"", ",");
