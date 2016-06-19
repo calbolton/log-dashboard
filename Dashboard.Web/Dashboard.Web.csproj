@@ -226,21 +226,28 @@
     <Compile Include="SignalR\LogHub.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="_business\Domain\AzureLog.cs" />
+    <Compile Include="_business\Domain\DomainEvent.cs" />
     <Compile Include="_business\Domain\Log.cs" />
     <Compile Include="_business\Infrastrucure\BlobStorageContext.cs" />
     <Compile Include="_business\Infrastrucure\BlobStorageRepository.cs" />
-    <Compile Include="SignalR\LogFetcher.cs" />
+    <Compile Include="_business\Domain\LogFetcher.cs" />
     <Compile Include="_business\Domain\Infrastructure\ILogRepository.cs" />
     <Compile Include="_business\Infrastrucure\CsvProcessor.cs" />
+    <Compile Include="_business\Infrastrucure\JsonParser.cs" />
     <Compile Include="_business\Infrastrucure\LogConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\app.js" />
     <Content Include="app\controllers\logDashboardController.js" />
+    <Content Include="app\models\logDashboardModel.js" />
+    <Content Include="app\services\logDashboardService.js" />
     <Content Include="app\views\logDashboard.html" />
     <Content Include="app\views\index.html" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\logs.jpg" />
+    <Content Include="Content\Images\logsBW.jpg" />
+    <Content Include="Content\ui-bootstrap-csp.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -270,6 +277,10 @@
     <Content Include="Scripts\angular-scenario.js" />
     <Content Include="Scripts\angular-touch.js" />
     <Content Include="Scripts\angular-touch.min.js" />
+    <Content Include="Scripts\angular-ui\ui-bootstrap-tpls.js" />
+    <Content Include="Scripts\angular-ui\ui-bootstrap-tpls.min.js" />
+    <Content Include="Scripts\angular-ui\ui-bootstrap.js" />
+    <Content Include="Scripts\angular-ui\ui-bootstrap.min.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\bootstrap.js" />

@@ -17,6 +17,9 @@ namespace Dashboard.Web.SignalR
         
         public LogHub()
         {
+            if (_logFetcher != null)
+                return;
+
             var connectionString = CloudConfigurationManager.GetSetting("StorageConnectionString");
             var logRepository = new BlobStorageRepository(new BlobStorageContext()
             {
@@ -25,7 +28,7 @@ namespace Dashboard.Web.SignalR
             });
 
             _logFetcher = LogFetcher.Instance;
-            _logFetcher.Start(logRepository);
+            _logFetcher.Start(logRepository, TimeSpan.FromSeconds(5), DateTime.Now.AddDays(-2));
         }
 
         public ICollection<AzureLog> GetAllLogs()

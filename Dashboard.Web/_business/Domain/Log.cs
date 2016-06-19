@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Web;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Dashboard.Web._business.Domain
 {
@@ -44,6 +46,7 @@ namespace Dashboard.Web._business.Domain
 
         public string UserId { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public LogType Type { get; set; }
 
         public string Message { get; set; }

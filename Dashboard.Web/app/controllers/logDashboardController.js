@@ -6,77 +6,86 @@
 
     app.controller('logDashboardController', [
         '$scope',
+        'logDashboardModel',
+        'logDashboardService',
         logDashboardController
     ]);
 
     function logDashboardController(
-        $scope) {
+        $scope, logDashboardModel, logDashboardService) {
 
-        $scope.azureLogs = [];
-        $scope.adjuvantErrorLogs = [];
-        $scope.adjuvantGlobalLogs = [];
-        $scope.adjuvantInformationalLogs = [];
-        $scope.adjuvantOtherLogs = [];
+        // Dashboard model
+        $scope.model = logDashboardModel;
 
-        $scope.clearLogs = function() {
-            $scope.azureLogs.length = 0;
-            $scope.adjuvantErrorLogs.length = 0;
-            $scope.adjuvantGlobalLogs.length = 0;
-            $scope.adjuvantInformationalLogs.length = 0;
-            $scope.adjuvantOtherLogs.length = 0;
-        };
+        //----- Summary -----
+        // Header properties
+        $scope.currentMicroServiceLog = {};
 
-        $scope.addLogs = function(logs){
-            _.each(logs, (log) => {
-                if (log.Log.MicroService === "UNCONVERTABLE") {
-
-                    $scope.azureLogs.push(log);
-
-                } else {
-                    if (log.Log.Type === 1) { // Error
-                        $scope.adjuvantErrorLogs.push(log.Log);
-                    } else if (log.Log.Type === 3) { // Info
-                        $scope.adjuvantInformationalLogs.push(log.Log);
-                    } else if (log.Log.Type === 5) { // Global
-                        $scope.adjuvantGlobalLogs.push(log.Log);
-                    } else { // Fatal, debug, warning
-                        $scope.adjuvantOtherLogs.push(log.Log);
-                    }
-                }
+        // Header methods
+        $scope.selectMicroServiceLogs = function(logName) {
+            $scope.currentMicroServiceLog = logDashboardService.getMicroServiceLogs(logName);
+            $scope.filteredLogs.length = 0;
+            _.each($scope.currentMicroServiceLog.levelLogs, function(fLog) {
+                if (fLog.isBeingViewed === undefined || fLog.isBeingViewed) {
+                    $scope.filteredLogs = $scope.filteredLogs.concat(fLog.logs);
+                }  
             });
-
-            $scope.$apply();
+            $scope.currentMicroServiceLog.hasError = false;
         }
 
-        $(function () {
-            console.log("JQURY INITIALIZED");
-            console.log($.connection);
-            var ticker = $.connection.log; // the generated client-side hub proxy
+        // ----- Logs -----
+        // Logs properties 
+        $scope.filteredLogs = [];
 
-            // Add client-side hub methods that the server will call
-            $.extend(ticker.client, {
-                logsAdded: function (logs) {
-                    $scope.addLogs(logs);
-                }
-            });
+        
+        // Logs methods
+        $scope.updateCurrentMicroserviceLogs = function (levelLogName) {
+            var levelLog = $scope.currentMicroServiceLog.getLevelLog(levelLogName);
 
-            function init() {
-                console.log("Getting all logs");
-                ticker.server.getAllLogs().done(function (logs) {
-                    $scope.clearLogs();
+            levelLog.isBeingViewed = !levelLog.isBeingViewed;
 
-                    $scope.addLogs(logs);
-                });
+            $scope.currentMicroServiceLog.refreshFilteredLogs();
+        }
+
+        $scope.resetLogs = function() {
+            console.log('RESETTING');
+            logDashboardModel.reset();
+        }
+
+        $scope.convertToJson = function(o) {
+            return JSON.stringify(o);
+        }
+
+        // Adjuvant log modal
+        $scope.currentLog = {};
+        $scope.showingCurrentLog = false;
+        $scope.showCurrentLog = function (log) {
+            $scope.currentLog = log;
+            $scope.showingCurrentLog = true;
+        }
+
+        $scope.hideCurrentLog = function() {
+            $scope.showingCurrentLog = false;
+        }
+
+        $scope.getLogLevelClass = function(level) {
+            if (level === 'Error' || level === 'Fatal' || level === 'Global') {
+                return 'danger';
+            } else if (level === 'Warn') {
+                return 'warning';
             }
 
+            return 'info';
+        }
+        
+        // ----- Init -----
+        var init = function () {
+            logDashboardService.startDashboard($scope);
+        }
 
-            // Start the connection
-            $.connection.hub.start()
-                .then(init);
-        });
+        init();
     }
 })();
 
 
-/// <reference path="C:\Projects\Git\X8.Dashboard\Dashboard.Web\Scripts/underscore.js" />
 

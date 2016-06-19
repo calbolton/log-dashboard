@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using Dashboard.Web._business.Domain;
+using Dashboard.Web.SignalR;
 using Dashboard.Web._business.Domain.Infrastructure;
-using Dashboard.Web._business.Infrastrucure;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
-using Microsoft.Azure;
 
-namespace Dashboard.Web.SignalR
+namespace Dashboard.Web._business.Domain
 {
     public class LogFetcher
     {
@@ -20,12 +18,12 @@ namespace Dashboard.Web.SignalR
 
         private ILogRepository _logRepository;
         private Timer _timer;
-        private readonly TimeSpan _updateInterval;
-        private DateTime _lastUpdatedDateTime = DateTime.Now.AddDays(-5);
+        private DateTime _lastUpdatedDateTime = DateTime.Now;//.AddHours(-30);
+        private static bool _gettingLogs = false;
+        public static bool IsStarted { get; private set; } = false;
 
         private LogFetcher(IHubConnectionContext<dynamic> clients)
         {
-            _updateInterval = TimeSpan.FromMilliseconds(30000);
             Logs = new List<AzureLog>();
             Clients = clients;
         }
@@ -39,26 +37,52 @@ namespace Dashboard.Web.SignalR
 
         public ICollection<AzureLog> Logs { get; set; }
         
-        public void Start(ILogRepository logRepository)
+        public void Start(ILogRepository logRepository, TimeSpan interval, DateTime startDateTime)
         {
+            if (IsStarted)
+            {
+                return;
+            }
+
+            IsStarted = true;
+            _lastUpdatedDateTime = startDateTime;
             _logRepository = logRepository;
-            _timer = new Timer(UpdateLogs, null, _updateInterval, _updateInterval);
+            _timer = new Timer(UpdateLogs, null, interval, interval);
             UpdateLogs(null);
         }
 
         private void UpdateLogs(object state)
         {
-            var logs = _logRepository.GetLogsAfter(_lastUpdatedDateTime);
-            _lastUpdatedDateTime = DateTime.Now;
-
-            var orderedLogs = logs.OrderByDescending(x => x.Date);
-
-            foreach (var azureLog in orderedLogs)
+            if (_gettingLogs)
             {
-                Logs.Add(azureLog);
+                return;
             }
 
-            Clients.All.logsAdded(logs);
+            try
+            {
+                _gettingLogs = true;
+                var tempLastUpdatedDate = _lastUpdatedDateTime;
+                _lastUpdatedDateTime = DateTime.Now;
+                var logs = _logRepository.GetLogsAfter(tempLastUpdatedDate);
+
+                var orderedLogs = logs.OrderByDescending(x => x.Date);
+
+                foreach (var azureLog in orderedLogs)
+                {
+                    Logs.Add(azureLog);
+                }
+
+                if (!logs.Any())
+                {
+                    return;
+                }
+
+                Clients.All.logsAdded(logs);
+            }
+            finally
+            {
+                _gettingLogs = false;
+            }
 
             //WriteDummyLog();
         }

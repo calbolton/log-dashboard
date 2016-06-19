@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using Dashboard.Web._business.Infrastrucure;
 using FileHelpers;
+using Microsoft.WindowsAzure.Storage;
 using Newtonsoft.Json;
 
 namespace Dashboard.Web._business.Domain
@@ -45,12 +46,56 @@ namespace Dashboard.Web._business.Domain
                 }
                 catch (Exception ex)
                 {
-                    return new Log()
+
+                    try // Connvert it to event
                     {
-                        MicroService = "UNCONVERTABLE",
-                        Message = Message,
-                        Exception = ex
-                    };
+                        var ev = JsonConvert.DeserializeObject<DomainEvent>(Message);
+                        return new Log()
+                        {
+                            MicroService = "Event",
+                            Message = Message,
+                            Type = Log.LogType.Info,
+                            Action = ev.Name,
+                            DateTimeOffset = ev.DateTime,
+                            UserId = ev.UserId,
+                            Exception = ex,
+                            Module = ev.Type
+
+                        };
+                    }
+                    catch (Exception)
+                    {
+                        // Create general azure log
+                        var level = Log.LogType.Info;
+                        if (Level == LogLevel.Error.ToString())
+                        {
+                            level = Log.LogType.Error;
+                        }
+                        else if (Level == "Information")
+                        {
+                            level = Log.LogType.Info;
+                        }
+                        else if (Level == LogLevel.Off.ToString())
+                        {
+                            level = Log.LogType.Global;
+                        }
+                        else if (Level == LogLevel.Verbose.ToString())
+                        {
+                            level = Log.LogType.Info;
+                        }
+                        else if (Level == LogLevel.Warning.ToString())
+                        {
+                            level = Log.LogType.Warn;
+                        }
+                        return new Log()
+                        {
+                            MicroService = "Azure",
+                            Message = Message,
+                            Type = level,
+                            DateTimeOffset = Date,
+                            Action = ApplicationName
+                        };
+                    }
                 }
 
             }

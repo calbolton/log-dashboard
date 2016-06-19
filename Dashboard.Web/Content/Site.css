@@ -22,3 +22,74 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.hover-gray:hover {
+    background: #dcdcdc;
+    cursor: pointer;
+}
+.hover-white-border:hover {
+    border-color: red;
+    border-width: 2px;
+    cursor: pointer;
+}
+
+.vertical-line {
+    border-left-style: solid;
+}
+.vertical-line-red {
+    border-left-color: #ff0000;
+}
+.vertical-line-black {
+    border-left-color: black;
+}
+.vertical-line-thick {
+    border-left-width: thick;
+}
+
+.vertical-line-thin {
+    border-left-width: thin;
+}
+
+.bottom-align-text {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+
+.jumbotron-image-log {
+    background-image: url('Images/logs.jpg');
+    color: white;
+}
+.jumbotron-image-logbw {
+    background-image: url('Images/logsBW.jpg');
+    color: white;
+    background-size: cover
+}
+.jumbotron .bg-overlay {
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+}
+
+.jumbotron {
+    padding:30px 15px;
+    margin-bottom:30px;
+}
+
+.modal-dialog {
+  width: 80%;
+  height: 100%;
+  /*margin: 0;
+  padding: 0;*/
+}
+
+.modal-content {
+  height: auto;
+  min-height: 100%;
+}
+.table-nonfluid {
+   width: auto !important;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  background-color: #red;
+}

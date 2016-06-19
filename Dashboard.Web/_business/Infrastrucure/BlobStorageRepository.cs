@@ -115,33 +115,28 @@ namespace Dashboard.Web._business.Infrastrucure
 
         private void BeforeEvent(EngineBase engine, BeforeReadEventArgs<AzureLog> e)
         {
+            var hasJson = e.RecordLine.Any(x => x == '{');
 
-
-            var openingBracket = e.RecordLine.IndexOf("{", StringComparison.Ordinal);
-
-            if (openingBracket >= 0)
+            if (hasJson)
             {
-                var closingBracket = e.RecordLine.LastIndexOf("}", StringComparison.Ordinal);
+                e.RecordLine = JsonParser.ParseJson(e.RecordLine, ',', '|');
 
-                if (closingBracket < 0)
-                {
-                    return;
-                }
+                //var closingBracket = e.RecordLine.LastIndexOf("}", StringComparison.Ordinal);
 
-                var ss = e.RecordLine.Substring(openingBracket - 1, closingBracket - openingBracket + 3);
+                //if (closingBracket < 0)
+                //{
+                //    return;
+                //}
 
-                //var l = JsonConvert.DeserializeObject<Log>(ss);
+                //var ss = e.RecordLine.Substring(openingBracket - 1, closingBracket - openingBracket + 3);
 
-                StringBuilder myStringBuilder = new StringBuilder(e.RecordLine);
-                myStringBuilder.Replace(",", "|", openingBracket, closingBracket - openingBracket + 1);
-                e.RecordLine = myStringBuilder.ToString();
+                ////var l = JsonConvert.DeserializeObject<Log>(ss);
+
+                //StringBuilder myStringBuilder = new StringBuilder(e.RecordLine);
+                //myStringBuilder.Replace(",", "|", openingBracket, closingBracket - openingBracket + 1);
+                //e.RecordLine = myStringBuilder.ToString();
 
             }
-            //  Sometimes changing the record line can be useful, for example to correct for
-            //  a bad data layout.  Here is an example of this, commented out for this example
-
-            //if (e.RecordLine.StartsWith(" "))
-            //   e.RecordLine = "Be careful!";
         }
 
 

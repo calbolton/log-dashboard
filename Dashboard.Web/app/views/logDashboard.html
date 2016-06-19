@@ -1,374 +1,255 @@
-﻿    <div>
-        <table>
-            <thead>
-                <tr>Message</tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+﻿<div>
+    <div class="row">
+        <div class="jumbotron jumbotron-image-logbw col-md-12" style="padding-bottom: 15px;">
+            <div class="container">
+                <h1 style="text-align: center; margin-top: 0; margin-bottom: 50px;">
+                    Log Dashboard
+                    <small></small>
+                </h1>
+
+                <div class="row">
+                    <div class="col-md-2" ng-repeat="levelLog in model.allLog.levelLogs">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <h5 class="pull-right" style="text-align: center; margin-top: 8px; margin-right: 5px;">Total {{levelLog.name}}</h5>
+                            </div>
+                            <div class="col-md-6">
+                                <h2 style="text-align: center; margin-top: 0" class="form-control-static pull-left">{{levelLog.logs.length}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: 40px; margin-right: -100px;">
+                    <div class="col-md-2 col-md-offset-10">
+                        <button class="btn btn-primary pull-right" ng-click="resetLogs()">Reset</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <h4 style="text-align: center;">Recent</h4>
+                </div>
+
+                <div class="table-responsive" style="font-size: 10px;">
+                    <table class="table hover-white-border" id="recentLogs">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    Micro Service
+                                </th>
+                                <th>
+                                    Module
+                                </th>
+                                <th>
+                                    Level
+                                </th>
+                                <th>
+                                    Action
+                                </th>
+                                <th>
+                                    User Id
+                                </th>
+                                <th>
+                                    Message
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                ng-click="showCurrentLog(allLog.Log)"
+                                ng-repeat="allLog in model.allLog.logs | limitTo: -5 | orderBy: 'Log.DateTimeOffset':true">
+                                <td>
+                                    {{allLog.Log.DateTimeOffset | date:'yyyy-MM-dd HH:mm:ss Z'}}
+                                </td>
+                                <td>
+                                    {{allLog.Log.MicroService}}
+                                </td>
+                                <td>
+                                    {{allLog.Log.Module}}
+                                </td>
+                                <td>
+                                    {{allLog.Log.Type}}
+                                </td>
+                                <td>
+                                    {{allLog.Log.Action}}
+                                </td>
+                                <td>
+                                    {{allLog.Log.UserId}}
+                                </td>
+                                <td>
+                                    {{allLog.Log.Message}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
     </div>
-<h3>Adjuvant Error</h3>
-<div class="table-responsive">
+    
+    <!--SUMMARY-->
+    <div class="row">
+        <div class="col-md-2 panel panel-primary hover-gray" style="margin-left: 20px;" ng-repeat="log in model.microServiceLogs" ng-click="selectMicroServiceLogs(log.name)">
+            <h4 style="text-align: center;">{{log.name}}</h4>
+            <hr style="margin-top: 0; margin-bottom: 5px;"/>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row"></div>
+                    <div class="row">
+                        <p style="font-size: 45px; margin-top: 15px; text-align: center;"
+                           ng-style="{'color': log.hasError ? 'red' : 'black'}">{{log.logs.length}}</p>
+                    </div>
+                    <div class="row"></div>
+                </div>
+                <div class="col-md-6 vertical-line vertical-line-black vertical-line-thin">
+                    <div ng-repeat="levelLog in log.levelLogs">
+                        <p style="font-size: 10px; margin-bottom: 2px;"> {{levelLog.name}}: <span style="font-size: 10px;"> {{levelLog.logs.length}}</span></p>
+                    </div>
 
-    <table class="table table-advance table-hover" id="adjuvantErrorLogs">
-        <thead>
-        <tr>
-            <th>
-                DateTimeOffset
-            </th>
-            <th>
-                MicroService
-            </th>
-            <th>
-                Module
-            </th>
-            <th>
-                ThreadId
-            </th>
-            <th>
-                Action
-            </th>
-            <th>
-                UserId
-            </th>
-            <th>
-                Type
-            </th>
-            <th>
-                Message
-            </th>
-            <th>
-                Exception
-            </th>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        </tr>
-        </thead>
-        <tbody style="font-size: 13px;">
-        <tr ng-repeat="adjuvantLog in adjuvantErrorLogs">
-            <td>
-                {{adjuvantLog.DateTimeOffset}}
-            </td>
-            <td>
-                {{adjuvantLog.MicroService}}
-            </td>
-            <td>
-                {{adjuvantLog.Module}}
-            </td>
-            <td>
-                {{adjuvantLog.ThreadId}}
-            </td>
-            <td>
-                {{adjuvantLog.Action}}
-            </td>
-            <td>
-                {{adjuvantLog.UserId}}
-            </td>
-            <td>
-                {{adjuvantLog.Type}}
-            </td>
-            <td>
-                {{adjuvantLog.Message}}
-            </td>
-            <td>
-                {{adjuvantLog.Exception}}
-            </td>
+    <hr/>
+    <!--MICRO SERVICE LOG-->
+    <div class="panel panel-info" ng-show="currentMicroServiceLog.name != undefined" style="margin: 10px;">
+        <div class="panel-heading">
+            <h3 style="text-align: center;">{{currentMicroServiceLog.name}} Logs </h3>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <div class="row">
+                    <div class="col-md-1 panel panel-primary hover-gray"
+                         ng-repeat="levelLog in currentMicroServiceLog.levelLogs"
+                         style="margin-left: 20px;"
+                         ng-style="{'border-color': levelLog.isBeingViewed === undefined || levelLog.isBeingViewed ? 'green' : 'red'}"
+                         ng-click="updateCurrentMicroserviceLogs(levelLog.name)">
+                        <h4 style="text-align: center;"> {{levelLog.name}} <span style="font-size: 12px;"> ({{levelLog.logs.length}})</span> </h4>
+                    </div>
+                </div>
 
-        </tr>
-        </tbody>
-    </table>
+                <!--<div class="form-group">
+                    <label class="control-label col-md-3">Action</label>
+                    <div class="col-md-6">
+                        <input readonly="readonly" class="form-control" ng-model="currentLog.Action">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">User Id</label>
+                    <div class="col-md-6">
+                        <input readonly="readonly" class="form-control" ng-model="currentLog.UserId">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">Type</label>
+                    <div class="col-md-6">
+                        <input readonly="readonly" class="form-control" ng-model="currentLog.Type">
+                    </div>
+                </div>-->
 
+                <table class="table table-advance table-hover" id="adjuvantErrorLogs">
+                    <thead>
+                    <tr>
+                        <th>
+                            Date
+                        </th>
+                        <th>
+                            Micro Service
+                        </th>
+                        <th>
+                            Module
+                        </th>
+                        <th>
+                            Level
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                        <th>
+                            User Id
+                        </th>
+                        <th>
+                            Message
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody style="font-size: 13px;">
+                    <tr class="hover-gray"
+                        ng-click="showCurrentLog(adjuvantLog.Log)"
+                        ng-class="{'{{getLogLevelClass(adjuvantLog.Log.Type)}}': true }"
+                        ng-repeat="adjuvantLog in currentMicroServiceLog.filteredLogs | orderBy: 'Log.DateTimeOffset':true">
+                        <td>
+                            {{adjuvantLog.Log.DateTimeOffset | date:'yyyy-MM-dd HH:mm:ss Z'}}
+                        </td>
+                        <td>
+                            {{adjuvantLog.Log.MicroService}}
+                        </td>
+                        <td>
+                            {{adjuvantLog.Log.Module}}
+                        </td>
+                        <td>
+                            {{adjuvantLog.Log.Type}}
+                        </td>
+                        <td>
+                            {{adjuvantLog.Log.Action}}
+                        </td>
+                        <td>
+                            {{adjuvantLog.Log.UserId}}
+                        </td>
+                        <td>
+                            {{adjuvantLog.Log.Message}}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
 
 </div>
 
-<hr/>
-<h3>Adjuvant Global</h3>
+<div modal-show="showingCurrentLog" class="modal fade" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <i class="fa fa-plus-square-o fa-fw"></i>
+                <span class="modal-title">Log Detail</span>
+            </div>
+            <div class="modal-body" style="height: 100%;">
+                <div class="portlet-body form">
 
-<div class="table-responsive">
-    <table class="table table-advance table-hover" id="adjuvantGlobalLogs">
-        <thead>
-            <tr>
-                <th>
-                    DateTimeOffset
-                </th>
-                <th>
-                    MicroService
-                </th>
-                <th>
-                    Module
-                </th>
-                <th>
-                    ThreadId
-                </th>
-                <th>
-                    Action
-                </th>
-                <th>
-                    UserId
-                </th>
-                <th>
-                    Type
-                </th>
-                <th>
-                    Message
-                </th>
-                <th>
-                    Exception
-                </th>
-
-            </tr>
-        </thead>
-        <tbody style="font-size: 13px;">
-            <tr ng-repeat="adjuvantLog in adjuvantGlobalLogs">
-                <td>
-                    {{adjuvantLog.DateTimeOffset}}
-                </td>
-                <td>
-                    {{adjuvantLog.MicroService}}
-                </td>
-                <td>
-                    {{adjuvantLog.Module}}
-                </td>
-                <td>
-                    {{adjuvantLog.ThreadId}}
-                </td>
-                <td>
-                    {{adjuvantLog.Action}}
-                </td>
-                <td>
-                    {{adjuvantLog.UserId}}
-                </td>
-                <td>
-                    {{adjuvantLog.Type}}
-                </td>
-                <td>
-                    {{adjuvantLog.Message}}
-                </td>
-                <td>
-                    {{adjuvantLog.Exception}}
-                </td>
-
-            </tr>
-        </tbody>
-    </table>
+                    <form name="formToken" class="form-horizontal" role="form">
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Thread Id:</label>
+                                    <div class="col-md-6">
+                                        <input readonly="readonly" class="form-control" ng-model="currentLog.ThreadId">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Exception</label>
+                                    <div class="col-md-9">
+                                        <textarea readonly="readonly" style="min-height: 400px; max-width: 90%; margin-right: 50px; width: 100%;" class="form-control">{{convertToJson(currentLog.Exception)}}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn blue btn-outline pull-right btn-outline margin-right-10" ng-click="hideCurrentLog()"><i class="fa fa-arrow-circle-left fa-fw"></i> Cancel </button>
+            </div>
+        </div>
+    </div>
 </div>
-<hr />
-
-<h3>Adjuvant Information</h3>
-
-
-<div class="table-responsive">
-    <table class="table table-advance table-hover" id="adjuvantInformationalLogs">
-        <thead>
-            <tr>
-                <th>
-                    DateTimeOffset
-                </th>
-                <th>
-                    MicroService
-                </th>
-                <th>
-                    Module
-                </th>
-                <th>
-                    ThreadId
-                </th>
-                <th>
-                    Action
-                </th>
-                <th>
-                    UserId
-                </th>
-                <th>
-                    Type
-                </th>
-                <th>
-                    Message
-                </th>
-                <th>
-                    Exception
-                </th>
-
-            </tr>
-        </thead>
-        <tbody style="font-size: 13px;">
-            <tr ng-repeat="adjuvantLog in adjuvantInformationalLogs">
-                <td>
-                    {{adjuvantLog.DateTimeOffset}}
-                </td>
-                <td>
-                    {{adjuvantLog.MicroService}}
-                </td>
-                <td>
-                    {{adjuvantLog.Module}}
-                </td>
-                <td>
-                    {{adjuvantLog.ThreadId}}
-                </td>
-                <td>
-                    {{adjuvantLog.Action}}
-                </td>
-                <td>
-                    {{adjuvantLog.UserId}}
-                </td>
-                <td>
-                    {{adjuvantLog.Type}}
-                </td>
-                <td>
-                    {{adjuvantLog.Message}}
-                </td>
-                <td>
-                    {{adjuvantLog.Exception}}
-                </td>
-
-            </tr>
-        </tbody>
-    </table>
-</div>
-<hr />
-
-<h3>Adjuvant Other</h3>
-
-<div class="table-responsive">
-    <table class="table table-advance table-hover" id="adjuvantOtherLogs">
-        <thead>
-            <tr>
-                <th>
-                    DateTimeOffset
-                </th>
-                <th>
-                    MicroService
-                </th>
-                <th>
-                    Module
-                </th>
-                <th>
-                    ThreadId
-                </th>
-                <th>
-                    Action
-                </th>
-                <th>
-                    UserId
-                </th>
-                <th>
-                    Type
-                </th>
-                <th>
-                    Message
-                </th>
-                <th>
-                    Exception
-                </th>
-
-            </tr>
-        </thead>
-        <tbody style="font-size: 13px;">
-            <tr ng-repeat="adjuvantLog in adjuvantOtherLogs">
-                <td>
-                    {{adjuvantLog.DateTimeOffset}}
-                </td>
-                <td>
-                    {{adjuvantLog.MicroService}}
-                </td>
-                <td>
-                    {{adjuvantLog.Module}}
-                </td>
-                <td>
-                    {{adjuvantLog.ThreadId}}
-                </td>
-                <td>
-                    {{adjuvantLog.Action}}
-                </td>
-                <td>
-                    {{adjuvantLog.UserId}}
-                </td>
-                <td>
-                    {{adjuvantLog.Type}}
-                </td>
-                <td>
-                    {{adjuvantLog.Message}}
-                </td>
-                <td>
-                    {{adjuvantLog.Exception}}
-                </td>
-
-            </tr>
-        </tbody>
-    </table>
-</div>
-<hr />
-
-<h3>Azure Logs</h3>
-
-<div class="table-responsive">
-    <table class="table table-advance table-hover" id="angularErrors">
-        <thead>
-            <tr>
-                <th>
-                    Created Date
-                </th>
-                <th>
-                    Level
-                </th>
-                <th>
-                    Application Name
-                </th>
-                <th>
-                    Instance Id
-                </th>
-                <th>
-                    Event Tick Count
-                </th>
-                <th>
-                    Event Id
-                </th>
-                <th>
-                    Process Id
-                </th>
-                <th>
-                    Thread Id
-                </th>
-                <th>
-                    Message
-                </th>
-                <th>
-                    Activity Id
-                </th>
-            </tr>
-        </thead>
-        <tbody style="font-size: 13px;">
-            <tr ng-repeat="log in azureLogs">
-                <td>
-                    {{log.Date}}
-                </td>
-                <td>
-                    {{log.Level}}
-                </td>
-                <td>
-                    {{log.ApplicationName}}
-                </td>
-                <td>
-                    {{log.InstanceId}}
-                </td>
-                <td>
-                    {{log.EventTickCount}}
-                </td>
-                <td>
-                    {{log.EventId}}
-                </td>
-                <td>
-                    {{log.PId}}
-                </td>
-                <td>
-                    {{log.TId}}
-                </td>
-                <td>
-                    {{log.Message}}
-                </td>
-                <td>
-                    {{log.ActivityId}}
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
